@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
         >
-    <TextView
-            android:layout_width="fill_parent"
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+        <LinearLayout
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                />
+
+    </ScrollView>
+
+    <Button
+            android:id="@+id/starFind"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World, MyActivity"
+            android:layout_weight="0"
+            android:text="Find"
             />
 </LinearLayout>
 

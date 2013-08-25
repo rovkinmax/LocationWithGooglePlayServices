@@ -14,6 +14,7 @@
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="module" module-name="google-play-services_lib" exported="" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
