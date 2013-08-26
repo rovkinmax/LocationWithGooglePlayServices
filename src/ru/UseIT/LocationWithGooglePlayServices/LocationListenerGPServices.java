@@ -27,8 +27,6 @@ public final class LocationListenerGPServices extends ILocationListener implemen
 
     private LocationRequest mLocationRequest;
     private LocationClient mLocationClient;
-    private Location mLocation = null;
-    private FindLocation findLocation;
 
     private static volatile LocationListenerGPServices instance;
 
@@ -59,22 +57,14 @@ public final class LocationListenerGPServices extends ILocationListener implemen
     @Override
     public void onLocationChanged(final Location location)
     {
-        mLocation = location;
+        if (locationRunnable != null)
+            locationRunnable.locationUpdate(location);
     }
 
     @Override
     public void onConnected(final Bundle bundle)
     {
-        if (!useCurrentLocation())
-        {
-
-            mLocationClient.requestLocationUpdates(mLocationRequest, this);
-            if (findLocation != null && !findLocation.isCancelled())
-                findLocation.cancel(true);
-            findLocation = new FindLocation();
-            findLocation.execute();
-
-        }
+        mLocationClient.requestLocationUpdates(mLocationRequest, this);
     }
 
     @Override
@@ -109,64 +99,10 @@ public final class LocationListenerGPServices extends ILocationListener implemen
     public void enableMyLocation()
     {
         log("enableMyLocation");
-        mLocation = null;
         mLocationClient.connect();
     }
 
 
-    /**
-     * Определяет, подходит ли нам последнее изветное местопложение. Интервал 30 секунд
-     *
-     * @return возвращает true, в случае использования
-     */
-    private boolean useCurrentLocation()
-    {
-        final Location location = mLocationClient.getLastLocation();
-        if (System.currentTimeMillis() - location.getTime() < HALF_MINUTE)
-        {
-            log("is useCurrentLocation");
-            disableMyLocation();
-            if (locationRunnable != null)
-                locationRunnable.locationUpdate(location);
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Прекращает поиск либо по времени либо по нахождения местоположения.
-     *
-     * @return возвращает местоположение, если оно не было найдено, то будет null
-     */
-    private Location endFind()
-    {
-        long sec = System.currentTimeMillis();
-        //time out 20 sec
-        while (this.mLocation == null && System.currentTimeMillis() - sec < TIME_OUT)
-        {
-        }
-        log("endFind");
-        return this.mLocation;
-    }
-
-    private class FindLocation extends AsyncTask<Void, Void, Location>
-    {
-
-        @Override
-        protected Location doInBackground(final Void... params)
-        {
-            return endFind();
-        }
-
-        @Override
-        protected void onPostExecute(final Location location)
-        {
-            if (locationRunnable != null)
-                locationRunnable.locationUpdate(location);
-            disableMyLocation();
-        }
-    }
 
     /**
      * Прекращает определение местоположения

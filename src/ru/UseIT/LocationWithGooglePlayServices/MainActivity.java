@@ -180,6 +180,7 @@ public class MainActivity extends Activity implements ILocationListener.Location
     @Override
     public void locationUpdate(final Location location)
     {
+        locationListener.disableMyLocation();
         sortStation = new SortStation();
         sortStation.execute(location);
     }
